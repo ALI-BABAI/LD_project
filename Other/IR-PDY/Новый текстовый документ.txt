@@ -1,0 +1,39 @@
+FFA25D = 1
+
+FF629D = 2
+
+FFE21D = 3
+
+FF22DD = 4
+
+FF02FD = 5
+
+FFC23D = 6
+
+FFE01F = 7
+
+FFA857 = 8
+
+FF906F = 9
+
+FF9867 = 0
+
+FF6897 = *
+
+FFB04F = #
+
+FF18E7 = UP
+
+FF4AB5 = DOWN
+
+FF10EF = LEFT
+
+FF5AA5 = RIGHT
+
+FF38C7 = OK
+
+
+
+
+
+
