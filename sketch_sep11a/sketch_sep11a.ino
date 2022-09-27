@@ -10,7 +10,7 @@
 #define UP    0xFF18E7
 #define DOWN  0xFF4AB5
 
-uint16_t delayTime = 0;
+uint16_t delayTime = 100;
 
 IRrecv irrecv(IR_MODULE); // указываем вывод, к которому подключен приемник
 decode_results results;
@@ -53,16 +53,20 @@ void loop() {
         delayTime += 100;
         break;
       case DOWN:
-        delayTime -= 100;
+        if (delayTime == 100)
+         delayTime = 100;
+        else
+          delayTime -= 100;
         break;
       default:
         break;
     }
 //  Serial.println(results.value, HEX);
-    irrecv.resume(); // Ждем следующее значение от пульта ДУ
-    delay(delayTime);
-    digitalWrite(LASER, !(digitalRead(LASER)));
+    
 
   }
+  irrecv.resume(); // Ждем следующее значение от пульта ДУ
 
+    delay(delayTime);
+    digitalWrite(LASER, !(digitalRead(LASER)));
 }
