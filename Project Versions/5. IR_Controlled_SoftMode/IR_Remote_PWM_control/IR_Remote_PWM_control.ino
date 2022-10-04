@@ -31,9 +31,8 @@ IRrecv irrecv(IR_MODULE);         // Обозначаем вывод, к кот�
 decode_results results;           // задаём переменную, в которую летят коды от пульта
 
 bool START = 0;                   // Состояние лазера (изначально выкл)
-bool STATUS = 0;                  //
-uint8_t DELAY_LD        = 10;     // управление скоростью включения/выключения
-uint8_t ANALOG_ITERATOR = 255;    // 0...255
+uint8_t DELAY_LD        = 1;      // управление скоростью включения/выключения
+uint8_t ANALOG_ITERATOR = 100;    // 0...255
 
 void setup()
 {
@@ -42,7 +41,6 @@ void setup()
   dumpArduinoIDE();               // выводит активную версию софта
   dumpPlatform();                 // выводит тип МК
   dumpClock();                    // выводит частоту микроконтроллера в монитор порта
-
 
   irrecv.enableIRIn();            // запускаем приёмник IR
   Serial.println("Enabled IRin"); // сигнал о готовности модуля ИК-приёмника
@@ -79,27 +77,19 @@ void loop()
         break;
       case OK:
         START = !START;                 // лазер меняет своё состояние (ВКЛ/ВЫКЛ)
-//      STATUS = !STATUS;
         break;
       default:
         digitalWrite(LASER, LOW);
         break;
     }
   }
-  STATUS = !STATUS;
-  if ((START)&(STATUS))
+  if (START)
   {
-    for (int i=0; i<=ANALOG_ITERATOR; i++) // плавное включение лазера
-    {
-      analogWrite(LASER, i);
-      delay(DELAY_LD);
-    }
-    for (int i=ANALOG_ITERATOR; i>=0; i--) //плавное выключение лазера
-    {
-      analogWrite(LASER, i);
-      delay(DELAY_LD);
-    }
-    STATUS = !STATUS;
+    analogWrite(LASER, ANALOG_ITERATOR);
+    delay(DELAY_LD);
+    irrecv.resume();
+    if (irrecv.decode(&results))
+      START = 0;
   }
   irrecv.resume(); // Ждем следующее значение от пульта ДУ
 }
