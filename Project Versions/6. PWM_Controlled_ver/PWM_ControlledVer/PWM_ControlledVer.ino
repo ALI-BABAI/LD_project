@@ -12,47 +12,30 @@
 // После вызова analogWrite() на выходе будет генерироваться постоянная прямоугольная волна с заданной шириной импульса до следующего вызова analogWrite
 // (или вызова digitalWrite или digitalRead на том же порту вход/выхода). Частота ШИМ сигнала приблизительно 490 Hz.
 
-#define DELAY_LD          10  // управление скоростью включения/выключения
-#define ANALOG_ITERATOR   255 // 0...255
+//#define DELAY_LD          10  // управление скоростью включения/выключения
+//#define ANALOG_ITERATOR   255 // 0...255
 
 #define LASER             10  // Порт к которому подключен лазерный диод
+#define BLUE_RES          A5  // Порт к которому подключен синий потенциометр
+#define ORANGE_RES        A2  // Порт к которому подключен оранжевый потенциометр
 
 void setup() 
 {
-   pinMode(LASER, OUTPUT);    // инициализируем Pin10 как выход
+  Serial.begin(9600);           // открыть терминал для отслеживания значения на аналоговом входе (CTRL + SHIFT + M) - *МониторПорта
+  pinMode(LASER, OUTPUT);       // инициализируем Pin 10 как выход
+  pinMode(BLUE_RES, INPUT);     // инициализируем Pin A5 как вход
+  pinMode(ORANGE_RES, INPUT);   // инициализируем Pin A2 как вход
 } 
 
 void loop()
 {
-   for (int i=0; i<=ANALOG_ITERATOR; i++) // плавное включение лазера
-   {
-      analogWrite(LASER, i);
-      delay(DELAY_LD);
-   }
-   for (int i=ANALOG_ITERATOR; i>=0; i--) //плавное выключение лазера
-   {
-      analogWrite(LASER, i);
-      delay(DELAY_LD);
-   }
-
-// !!! ВОТ ЭТУ ЧАСТЬ КОДА УБРАТЬ!!!
-//Яркость ЛД : напряжение зависит от Х (LASER, Х)
-  analogWrite(LASER, 0);
-  delay(1000);
-  analogWrite(LASER, 100);
-  delay(1000);
-  analogWrite(LASER, 150);
-  delay(1000);
-  analogWrite(LASER, 200);
-  delay(1000);
-  analogWrite(LASER, 255);
-  delay(1000);
-
-  for (int i=0; i<10; i++)
-  {
-    analogWrite(LASER, 255);
-    delay(1000);
-    analogWrite(LASER, 100);
-    delay(1000);
-  }
+  analogWrite(LASER, (analogRead(BLUE_RES))/4);
+  delay((analogRead(ORANGE_RES))/10);
+  
+  Serial.print("Analog input state (on blue resistor) = " );
+  Serial.println(analogRead(BLUE_RES));
+//  delay(1000);
+  Serial.print("Analog input state (on orange resistor) = " );
+  Serial.println(analogRead(ORANGE_RES));
+//  delay(1000);
 }
